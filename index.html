@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+#cover {
+	background: url(cover.png) no-repeat;
+	width:738px;
+	height:570px;
+	margin: auto auto;
+	position: absolute;
+	left: 50%;
+	top: 60%;
+	transform: translate(-50%, -50%);
+	cursor:pointer;
+}
+
+div#memory_board{
+	background-color: rgba(100, 100, 100, 0.8);
+	border:#999 5px solid;
+	width:1180px;
+	height:640px;
+	padding:5px;
+	margin: auto auto;
+	position: absolute;
+	left: 50%;
+	top: 52%;
+	transform: translate(-50%, -50%);
+	display: none;
+}
+
+
+div#memory_board > div{
+	background: url(0.png) no-repeat;
+	border:#000 2px solid;
+	width:43px;
+	height:43px;
+	float:left;
+	margin:9px;
+	padding:21px;
+	cursor:pointer;
+	text-align:center;
+}
+
+body {
+	background: url(background.jpg)  no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+</style>
+<script>
+var memoryArray = ['1','1','2','2','3','3','4','4','5','5','6','6','7','7','8','8','9','9','10','10','11','11','12','12'
+				,'13','13','14','14','15','15','16','16','17','17','18','18','19','19','20','20','21','21','22','22','23','23'
+				,'24','24','25','25','26','26','27','27','28','28','29','29','30','30','31','31','32','32','33','33'];
+var memoryValues = [];
+var memoryTileIds = [];
+var memoryFlipped = [];
+var tilesFlipped = 0;
+
+Array.prototype.memory_tile_shuffle = function(){
+    var i = this.length, j, temp;
+    while(--i > 0){
+        j = Math.floor(Math.random() * (i+1));
+        temp = this[j];
+        this[j] = this[i];
+        this[i] = temp;
+    }
+}
+
+function newBoard(){
+	tilesFlipped = 0;
+	var output = '';
+    memoryArray.memory_tile_shuffle();
+	for(var i = 0; i < memoryArray.length; i++){
+		output += '<div id="tile_'+i+'" onclick="memoryFlipTile(event,this,\''+memoryArray[i]+'\')"></div>';
+	}
+	document.getElementById('memory_board').innerHTML = output;
+}
+
+function flip2Back(){
+	// Flip the 2 tiles back over
+	var tile1 = document.getElementById(memoryTileIds[0]);
+	var tile2 = document.getElementById(memoryTileIds[1]);
+	tile1.style.background = 'url(0.png) no-repeat';
+	tile1.innerHTML = "";
+	tile2.style.background = 'url(0.png) no-repeat';
+	tile2.innerHTML = "";
+	// Clear both arrays
+	memoryValues = [];
+	memoryTileIds = [];
+}
+				
+function memoryFlipTile(event,tile,val){
+	if(tile.innerHTML == "" && memoryValues.length < 2 && memoryFlipped.indexOf(val) == -1){
+		tile.style.backgroundImage = 'url(' + val + '.png)';
+		tile.style.backgroundSize = '86px 86px';
+		tile.innerHTML=" ";
+		if(memoryValues.length == 0){
+			memoryValues.push(val);
+			memoryTileIds.push(tile.id);
+		} else if(memoryValues.length == 1){
+			memoryValues.push(val);
+			memoryTileIds.push(tile.id);
+			if(memoryValues[0] == memoryValues[1]){
+				memoryFlipped.push(memoryValues[0]);
+				tilesFlipped += 2;
+				// Clear both arrays
+				memoryValues = [];
+            	memoryTileIds = [];
+				// Check to see if the whole board is cleared
+				if(tilesFlipped == memoryArray.length){
+					alert("Board cleared... generating new board");
+					document.getElementById('memory_board').innerHTML = "";
+					newBoard();
+				}
+			} else {
+				setTimeout(flip2Back, 700);
+			}
+		}
+
+	}
+}
+
+var images = new Array()
+			function preload() {
+				for (i = 0; i < 34; i++) {
+					images[i] = new Image()
+					images[i].src = i + ".png";
+				}
+			}
+document.onload=preload();
+</script>
+</head>
+<body><center>
+<h1>Memory Card Game</h1><h1 id="click_start">Click in the image below to start the game!</h1></center>
+<div id="cover" onclick="this.style.display='none';document.querySelector('#memory_board').style.display='block';document.querySelector('#click_start').style.display='none'"></div>
+<div id="memory_board"></div>
+<script>newBoard();</script>
+</body>
+</html>
