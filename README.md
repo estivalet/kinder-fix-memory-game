@@ -40,10 +40,10 @@ Play it here https://estivalet.github.io/kinder-fix-memory-game/
 
 ## 📸 Screenshots
 ### 🎬 Start Screen
-![Start Screen](title.png)
+![Start Screen](cover.png)
 
 ### 🧩 Game Board
-![Game Board](game.png)
+![Game Board](shot.png)
 
 ## 📜 License
 This project is licensed under the [MIT License](LICENSE).
